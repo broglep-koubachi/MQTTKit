@@ -26,6 +26,13 @@ typedef NS_ENUM(NSUInteger, MQTTQualityOfService) {
     ExactlyOnce
 };
 
+typedef NS_ENUM(NSUInteger, MQTTSubscriptionResult) {
+    Success = 0,
+    NoMemory = 1,
+    InvalidParameters = 3,
+    NotConnected = 4
+};
+
 #pragma mark - MQTT Message
 
 @interface MQTTMessage : NSObject
@@ -105,9 +112,9 @@ typedef void (^MQTTDisconnectionHandler)(NSUInteger code);
 
 #pragma mark - Subscribe
 
-- (void)subscribe:(NSString *)topic
+- (MQTTSubscriptionResult)subscribe:(NSString *)topic
 withCompletionHandler:(MQTTSubscriptionCompletionHandler)completionHandler;
-- (void)subscribe:(NSString *)topic
+- (MQTTSubscriptionResult)subscribe:(NSString *)topic
           withQos:(MQTTQualityOfService)qos
 completionHandler:(MQTTSubscriptionCompletionHandler)completionHandler;
 - (void)unsubscribe: (NSString *)topic

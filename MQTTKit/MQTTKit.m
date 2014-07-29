@@ -326,18 +326,19 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
 
 #pragma mark - Subscribe
 
-- (void)subscribe: (NSString *)topic withCompletionHandler:(MQTTSubscriptionCompletionHandler)completionHandler {
-    [self subscribe:topic withQos:0 completionHandler:completionHandler];
+- (MQTTSubscriptionResult)subscribe: (NSString *)topic withCompletionHandler:(MQTTSubscriptionCompletionHandler)completionHandler {
+    return [self subscribe:topic withQos:0 completionHandler:completionHandler];
 }
 
-- (void)subscribe: (NSString *)topic withQos:(MQTTQualityOfService)qos completionHandler:(MQTTSubscriptionCompletionHandler)completionHandler
+- (MQTTSubscriptionResult)subscribe: (NSString *)topic withQos:(MQTTQualityOfService)qos completionHandler:(MQTTSubscriptionCompletionHandler)completionHandler
 {
     const char* cstrTopic = [topic cStringUsingEncoding:NSUTF8StringEncoding];
     int mid;
-    mosquitto_subscribe(mosq, &mid, cstrTopic, qos);
+    int result = mosquitto_subscribe(mosq, &mid, cstrTopic, qos);
     if (completionHandler) {
         [self.subscriptionHandlers setObject:[completionHandler copy] forKey:[NSNumber numberWithInteger:mid]];
     }
+    return result;
 }
 
 - (void)unsubscribe: (NSString *)topic withCompletionHandler:(void (^)(void))completionHandler
